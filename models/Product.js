@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-export const categories = ['chair', 'sofa', 'bed', 'table', 'other'];
-export const brands = ['other'];
+export const categories = ['chair', 'sofa', 'bed', 'table', 'handmade', 'other'];
+export const types = ['craft','design','handmade','interior','wood','other'];
 
 const productSchema = new mongoose.Schema({
   title: {
@@ -26,9 +26,9 @@ const productSchema = new mongoose.Schema({
     enum: categories,
     required: true
   },
-  brand: {
+  type: {
     type: String,
-    enum: brands,
+    enum: types,
     required: true
   },
   rating: {

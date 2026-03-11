@@ -1,4 +1,4 @@
-import Product, { brands, categories } from "../models/Product.js";
+import Product, { types, categories } from "../models/Product.js";
 import fs from 'fs';
 
 
@@ -32,8 +32,8 @@ export const getProducts = async (req, res) => {
       if (categories.some((name) => name.toLowerCase() === searchText.toLowerCase())) {
         queryObj.category = { $regex: searchText, $options: 'i' };
 
-      } else if (brands.some((name) => name.toLowerCase() === searchText.toLowerCase())) {
-        queryObj.brand = { $regex: searchText, $options: 'i' };
+      } else if (types.some((name) => name.toLowerCase() === searchText.toLowerCase())) {
+        queryObj.type = { $regex: searchText, $options: 'i' };
       } else {
         queryObj.title = { $regex: searchText, $options: 'i' };
       }
@@ -74,7 +74,7 @@ export const getProducts = async (req, res) => {
     const limit = req.query.limit || 10;
     const skip = (page - 1) * 10;
 
-    const total = await Product.countDocuments();
+    const total = await Product.countDocuments(output);
     const products = await query.skip(skip).limit(limit);
 
     return res.status(200).json({
@@ -119,7 +119,7 @@ export const getProduct = async (req, res) => {
 }
 
 export const createProduct = async (req, res) => {
-  const { title, price, detail, category, brand, stock } = req.body ?? {};
+  const { title, price, detail, category, type, stock } = req.body ?? {};
 
 
   try {
@@ -129,7 +129,7 @@ export const createProduct = async (req, res) => {
       detail,
       image: req.imagePath,
       category,
-      brand,
+      type,
       stock
     });
     return res.status(201).json({
@@ -153,7 +153,7 @@ export const createProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
 
-  const { title, price, detail, category, brand, stock } = req.body ?? {};
+  const { title, price, detail, category, type, stock } = req.body ?? {};
 
   try {
     const isExist = await Product.findById(req.id);
@@ -171,7 +171,7 @@ export const updateProduct = async (req, res) => {
     isExist.price = price || isExist.price;
     isExist.detail = detail || isExist.detail;
     isExist.category = category || isExist.category;
-    isExist.brand = brand || isExist.brand;
+    isExist.type = type || isExist.type;
     isExist.stock = stock || isExist.stock;
     await isExist.save();
 
